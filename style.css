@@ -1,0 +1,47 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.container{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.game{
+    height: 400px;
+    width: 400px;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 10px;
+}
+.game-block{
+    background-color: lightgrey;
+    border-radius: 5px;
+}
+.block1{
+    background-color: gray;
+}
+.block2{
+    background-color: gray;
+}
+.block3{
+    background-color: gray;
+}
+.block4{    
+    background-color: gray;
+}
+.redblock1{
+    grid-area: 3 / 2 / 3 / 2;
+    background-color: lightcoral;
+}
+.redblock2{
+    grid-area: 3 / 5 / 3 / 5;
+    background-color: lightcoral;
+}
+.selecionado{
+    border: 3px solid black;
+}
