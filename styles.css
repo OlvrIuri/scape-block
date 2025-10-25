@@ -1,0 +1,153 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #222831, #0f1114);
+  color: #f8f9fa;
+}
+
+
+.container {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.container:hover {
+  transform: scale(1.01);
+}
+
+
+h1, h2 {
+  color: #00adb5;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px #00adb5;
+}
+
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+
+.btn, button {
+  display: inline-block;
+  background: #00adb5;
+  color: #fff;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn:hover, button:hover {
+  background: #06d6a0;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(6, 214, 160, 0.3);
+}
+
+
+.btn-voltar {
+  display: inline-block;
+  margin-top: 1rem;
+  background: #393e46;
+  color: #eee;
+}
+
+.btn-voltar:hover {
+  background: #00adb5;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  text-align: left;
+}
+
+label {
+  font-weight: 500;
+  color: #ccc;
+}
+
+input {
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid #00adb5;
+  box-shadow: 0 0 10px #00adb5;
+}
+
+
+.mensagem-erro {
+  color: #ff4d4d;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.mensagem-sucesso {
+  color: #00ffae;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+
+.integrantes ul {
+  list-style: none;
+  margin-top: 1rem;
+}
+
+.integrantes li {
+  margin: 0.5rem 0;
+}
+
+.detalhes p {
+  margin: 0.4rem 0;
+}
+
+
+@media (max-width: 480px) {
+  .container {
+    padding: 2rem;
+  }
+
+  h1, h2 {
+    font-size: 1.5rem;
+  }
+
+  .btn, button {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+  }
+}

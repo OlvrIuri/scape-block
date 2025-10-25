@@ -9,6 +9,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    background: radial-gradient(circle at top, #222831, #0f1114);
+    color: white;
 }
 .game{
     height: 400px;
@@ -34,6 +37,12 @@
 .block4{    
     background-color: gray;
 }
+.block5{
+    background-color: gray;
+}
+.block6{
+    background-color: gray;
+}
 .redblock1{
     grid-area: 3 / 2 / 3 / 2;
     background-color: lightcoral;
@@ -44,4 +53,14 @@
 }
 .selecionado{
     border: 3px solid black;
+}
+button{
+    padding: 8px;
+    border-radius: 8px;
+}
+.menu-game{
+    text-align: center;
+}
+#btnNextLvl{
+    display: none;
 }

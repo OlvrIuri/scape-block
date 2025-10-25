@@ -1,179 +1,145 @@
-// script.js — versão corrigida e comentada
+// Detecta se está na página de cadastro
+const formCadastro = document.getElementById('formCadastro');
+const formLogin = document.getElementById('formLogin');
 
-const selecionados = document.getElementsByClassName('selecionado');
+//  Cadastro
+if (formCadastro) {
+  const erroMsg = document.getElementById('erroCadastro');
 
-const gameBlocks = document.getElementsByClassName('game-block');
-const blocks = document.querySelectorAll('.block1, .block2, .block3, .block4, .redblock1, .redblock2');
-const buttonUp = document.getElementById('btnUp');
-const buttonDown = document.getElementById('btnDown');
-const buttonLeft = document.getElementById('btnLeft');
-const buttonRight = document.getElementById('btnRight');
+  formCadastro.addEventListener('submit', function (event) {
+    event.preventDefault();
 
-// Tamanho da grade (5x5)
-const GRID_ROWS = 5;
-const GRID_COLS = 5;
+    const nome = document.getElementById('nome').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value;
+    const confirmar = document.getElementById('confirmar').value;
 
-/*
-  Nota de convenção:
-  - rStart, cStart são inclusivos (linha/coluna inicial)
-  - rEnd, cEnd são exclusivos (um a mais da última linha/coluna ocupada)
-  Ex: rStart=3, rEnd=5 ocupa linhas 3 e 4 (duas linhas)
-*/
-
-// blocos de obstáculos (exemplo)
-let blocksObs = [
-    { id: 'block1', rStart: 1, rEnd: 2, cStart: 1, cEnd: 3 }, 
-    { id: 'block2', rStart: 2, rEnd: 4, cStart: 3, cEnd: 4 }, 
-    { id: 'block3', rStart: 4, rEnd: 6, cStart: 1, cEnd: 2 }, 
-    { id: 'block4', rStart: 4, rEnd: 5  , cStart: 4, cEnd: 6 }  
-];
-
-// blocos vermelhos (alvo)
-let redBlocksObj = [
-    { id: 'redblock1', rStart: 3, rEnd: 4, cStart: 2, cEnd: 3 }, 
-    { id: 'redblock2', rStart: 3, rEnd: 4, cStart: 5, cEnd: 6 }  
-];
-
-// atualiza estilos CSS para red blocks
-const makeRedBlocks = () => {
-    redBlocksObj.forEach(block => {
-        const el = document.querySelector(`.${block.id}`);
-        if (el) {
-            // grid-area usa: row-start / col-start / row-end / col-end
-            el.style.gridArea = `${block.rStart} / ${block.cStart} / ${block.rEnd} / ${block.cEnd}`;
-        }
-    });
-};
-makeRedBlocks();
-
-// atualiza estilos CSS para obstáculos
-const makeObsBlock = () => {
-    blocksObs.forEach(block => {
-        const el = document.querySelector(`.${block.id}`);
-        if (el) {
-            el.style.gridArea = `${block.rStart} / ${block.cStart} / ${block.rEnd} / ${block.cEnd}`;
-        }
-    });
-};
-makeObsBlock();
-
-// seleção por clique (remove de todos e adiciona ao clicado)
-blocks.forEach(block => {
-    block.addEventListener('click', () => {
-        blocks.forEach(b => b.classList.remove('selecionado'));
-        block.classList.add('selecionado');
-    });
-});
-
-// função auxiliar: verifica se as coordenadas estão dentro dos limites da grade
-// OBS: rEnd/cEnd podem ser = GRID + 1 para permitir blocos que ocupam até a última linha/col
-const isInsideGrid = (rStart, rEnd, cStart, cEnd) => {
-    return (
-        rStart >= 1 &&
-        cStart >= 1 &&
-        rEnd <= GRID_ROWS + 1 &&
-        cEnd <= GRID_COLS + 1 &&
-        rStart < rEnd &&
-        cStart < cEnd
-    );
-};
-
-// função de colisão correta (considerando rEnd/cEnd exclusivos)
-// colisão existe se há interseção em linhas E colunas
-// função de colisão — permite que redblock1 e redblock2 se encontrem
-const hasCollision = (rStart, rEnd, cStart, cEnd, currentId, allBlocks) => {
-    for (let b of allBlocks) {
-        if (b.id === currentId) continue; // ignora o próprio bloco
-
-        const isRedCollision =
-            (currentId.includes("redblock") && b.id.includes("redblock"));
-
-        if (isRedCollision) continue;
-
-        // checagem de sobreposição (intervalos)
-        const rowsOverlap = (rStart < b.rEnd) && (rEnd > b.rStart);
-        const colsOverlap = (cStart < b.cEnd) && (cEnd > b.cStart);
-
-        if (rowsOverlap && colsOverlap) {
-            return true;
-        }
+    if (senha !== confirmar) {
+      erroMsg.textContent = 'As senhas não coincidem.';
+      return;
     }
-    return false;
-};
 
+    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
 
-// retorna uma lista combinada atual (cópias dos objetos) usada para checagens
-const getAllBlocks = () => {
-    return [...blocksObs, ...redBlocksObj];
-};
+    if (usuarios.find(u => u.email === email)) {
+      erroMsg.textContent = 'Já existe uma conta com esse e-mail.';
+      return;
+    }
 
-// função genérica para mover blocos (procura por elemento com .selecionado)
-function moveBlock(blockArray, direction) {
-    // iteramos pelos blocos do array (blocksObs e redBlocksObj)
-    blockArray.forEach(block => {
-        const el = document.querySelector(`.${block.id}`);
-        if (!el) return;
-        if (!el.classList.contains('selecionado')) return;
+    usuarios.push({ nome, email, senha });
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
-        // valores temporários para testar movimentação
-        let newRStart = block.rStart;
-        let newREnd = block.rEnd;
-        let newCStart = block.cStart;
-        let newCEnd = block.cEnd;
+    erroMsg.style.color = 'green';
+    erroMsg.textContent = 'Cadastro realizado com sucesso!';
 
-        if (direction === 'up') {
-            newRStart = block.rStart - 1;
-            newREnd = block.rEnd - 1;
-        } else if (direction === 'down') {
-            newRStart = block.rStart + 1;
-            newREnd = block.rEnd + 1;
-        } else if (direction === 'left') {
-            newCStart = block.cStart - 1;
-            newCEnd = block.cEnd - 1;
-        } else if (direction === 'right') {
-            newCStart = block.cStart + 1;
-            newCEnd = block.cEnd + 1;
-        }
-
-        // checar limites e colisão com outros blocos
-        const all = getAllBlocks();
-        if (
-            isInsideGrid(newRStart, newREnd, newCStart, newCEnd) &&
-            !hasCollision(newRStart, newREnd, newCStart, newCEnd, block.id, all)
-        ) {
-            block.rStart = newRStart;
-            block.rEnd = newREnd;
-            block.cStart = newCStart;
-            block.cEnd = newCEnd;
-        }
-    });
-
-    // depois de todos os possíveis movimentos, atualiza
-    makeObsBlock();
-    makeRedBlocks();
-
-    // Check win
-    winCondition();
+    setTimeout(() => {
+      formCadastro.reset();
+      window.location.href = 'login.html'; // redireciona para login
+    }, 1000);
+  });
 }
-// Função de vitória — detecta quando os dois blocos vermelhos se encontram
-const winCondition = () => {
-    const [r1, r2] = redBlocksObj;
 
-    // Verifica se há sobreposição entre redblock1 e redblock2
-    const rowsOverlap = (r1.rStart < r2.rEnd) && (r1.rEnd > r2.rStart);
-    const colsOverlap = (r1.cStart < r2.cEnd) && (r1.cEnd > r2.cStart);
+// Login
+if (formLogin) {
+  const erroLogin = document.getElementById('erroLogin');
 
-    if (rowsOverlap && colsOverlap) {
-        // Mostra mensagem de vitória
-        alert("🎉 Você venceu!");
-        return true;
+  formLogin.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value;
+
+    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+    // Procura usuário com o mesmo e-mail e senha
+    const usuarioEncontrado = usuarios.find(
+      (u) => u.email === email && u.senha === senha
+    );
+
+    if (usuarioEncontrado) {
+      erroLogin.style.color = 'green';
+      erroLogin.textContent = 'Login realizado com sucesso!';
+
+      // Armazena o usuário logado (opcional)
+      localStorage.setItem('usuarioLogado', JSON.stringify(usuarioEncontrado));
+
+      // Redireciona após 1 segundo
+      setTimeout(() => {
+        window.location.href = 'fase01.html'; // página de destino
+      }, 1000);
+    } else {
+      erroLogin.textContent = 'E-mail ou senha incorretos.';
     }
-    return false;
-};
+  });
+}
+// Recupera senha
+const formRecuperar = document.getElementById('formRecuperar');
+
+if (formRecuperar) {
+  const emailInput = document.getElementById('emailRecuperar');
+  const msg = document.getElementById('mensagemRecuperar');
+
+  formRecuperar.addEventListener('submit', function handleEmail(event) {
+    event.preventDefault();
+
+    const email = emailInput.value.trim();
+    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+    const usuario = usuarios.find(u => u.email === email);
+
+    if (!usuario) {
+      msg.style.color = 'red';
+      msg.textContent = 'Nenhum usuário encontrado com esse e-mail.';
+      return;
+    }
+
+    // Troca o conteúdo do formulário por campos de redefinição
+    formRecuperar.innerHTML = `
+      <label for="novaSenha">Nova Senha:</label>
+      <input type="password" id="novaSenha" required minlength="6">
+
+      <label for="confirmarSenha">Confirmar Nova Senha:</label>
+      <input type="password" id="confirmarSenha" required minlength="6">
+
+      <button type="submit" id="btnRedefinir">Redefinir Senha</button>
+      <p id="mensagemRecuperar" class="mensagem-sucesso"></p>
+    `;
+
+    // Remove o evento antigo e adiciona o novo (redefinição)
+    formRecuperar.removeEventListener('submit', handleEmail);
+
+    formRecuperar.addEventListener('submit', function (event2) {
+      event2.preventDefault();
+
+      const novaSenha = document.getElementById('novaSenha').value;
+      const confirmarSenha = document.getElementById('confirmarSenha').value;
+      const msgNova = document.getElementById('mensagemRecuperar');
+
+      if (novaSenha !== confirmarSenha) {
+        msgNova.style.color = 'red';
+        msgNova.textContent = 'As senhas não coincidem.';
+        return;
+      }
+
+      if (novaSenha.length < 6) {
+        msgNova.style.color = 'red';
+        msgNova.textContent = ' A senha deve ter pelo menos 6 caracteres.';
+        return;
+      }
+
+      // Atualiza a senha do usuário
+      const indice = usuarios.findIndex(u => u.email === email);
+      usuarios[indice].senha = novaSenha;
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+      msgNova.style.color = 'green';
+      msgNova.textContent = 'Senha redefinida com sucesso! Redirecionando...';
+
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 2000);
+    });
+  });
+}
 
 
-// listeners dos botões — usamos o array combinado para permitir mover qualquer bloco
-buttonUp.addEventListener('click', () => moveBlock([...blocksObs, ...redBlocksObj], 'up'));
-buttonDown.addEventListener('click', () => moveBlock([...blocksObs, ...redBlocksObj], 'down'));
-buttonLeft.addEventListener('click', () => moveBlock([...blocksObs, ...redBlocksObj], 'left'));
-buttonRight.addEventListener('click', () => moveBlock([...blocksObs, ...redBlocksObj], 'right'));
