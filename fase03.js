@@ -8,6 +8,7 @@ const buttonUp = document.getElementById('btnUp');
 const buttonDown = document.getElementById('btnDown');
 const buttonLeft = document.getElementById('btnLeft');
 const buttonRight = document.getElementById('btnRight');
+const buttonNextLvl = document.getElementById('btnNextLvl');
 
 const pMoviments = document.getElementById('mov');
 
@@ -30,15 +31,15 @@ let moves = 0;
 let blocksObs = [
     { id: 'block1', rStart: 1, rEnd: 2, cStart: 1, cEnd: 3 }, 
     { id: 'block2', rStart: 2, rEnd: 4, cStart: 3, cEnd: 4 }, 
-    { id: 'block3', rStart: 4, rEnd: 6, cStart: 1, cEnd: 2 }, 
-    { id: 'block4', rStart: 4, rEnd: 5, cStart: 2, cEnd: 4 },
+    { id: 'block3', rStart: 2, rEnd: 4, cStart: 1, cEnd: 2 }, 
+    { id: 'block4', rStart: 4, rEnd: 6, cStart: 2, cEnd: 4 },
     { id: 'block5', rStart: 3, rEnd: 5, cStart: 4, cEnd: 5},
     { id: 'block6', rStart: 2, rEnd: 3, cStart: 4, cEnd: 6}
 ];
 
 // blocos vermelhos (alvo)
 let redBlocksObj = [
-    { id: 'redblock1', rStart: 3, rEnd: 4, cStart: 2, cEnd: 3 }, 
+    { id: 'redblock1', rStart: 5, rEnd: 6, cStart: 1, cEnd: 2 }, 
     { id: 'redblock2', rStart: 3, rEnd: 4, cStart: 5, cEnd: 6 }  
 ];
 
@@ -206,12 +207,16 @@ const winCondition = () => {
     const colsOverlap = (r1.cStart < r2.cEnd) && (r1.cEnd > r2.cStart);
 
     if (rowsOverlap && colsOverlap) {
-        // Mostra mensagem de vitória
-        alert("🎉 Você venceu!");
+        // Próxima fase
+        buttonNextLvl.style.display = 'block';
         return true;
     }
     return false;
 };
+
+const loadNextLevel = () =>{
+        window.location.href='index.html';
+}
 
 
 // listeners dos botões — usamos o array combinado para permitir mover qualquer bloco
@@ -219,3 +224,4 @@ buttonUp.addEventListener('click', () => moveBlock([...blocksObs, ...redBlocksOb
 buttonDown.addEventListener('click', () => moveBlock([...blocksObs, ...redBlocksObj], 'down'));
 buttonLeft.addEventListener('click', () => moveBlock([...blocksObs, ...redBlocksObj], 'left'));
 buttonRight.addEventListener('click', () => moveBlock([...blocksObs, ...redBlocksObj], 'right'));
+buttonNextLvl.addEventListener('click', () => loadNextLevel())

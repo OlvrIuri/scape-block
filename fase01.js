@@ -178,7 +178,7 @@ const winCondition = () => {
     const colsOverlap = (r1.cStart < r2.cEnd) && (r1.cEnd > r2.cStart);
 
     if (rowsOverlap && colsOverlap) {
-        // Mostra mensagem de vitória
+        // Próxima fase
         buttonNextLvl.style.display = 'block';
         
         return true;

@@ -30,17 +30,17 @@ let moves = 0
 
 // blocos de obstáculos (exemplo)
 let blocksObs = [
-    { id: 'block1', rStart: 1, rEnd: 2, cStart: 1, cEnd: 3 }, 
+    { id: 'block1', rStart: 3, rEnd: 4, cStart: 1, cEnd: 3 }, 
     { id: 'block2', rStart: 2, rEnd: 4, cStart: 3, cEnd: 4 }, 
     { id: 'block3', rStart: 4, rEnd: 6, cStart: 1, cEnd: 2 }, 
     { id: 'block4', rStart: 4, rEnd: 5, cStart: 2, cEnd: 4 },
-    { id: 'block5', rStart: 3, rEnd: 5, cStart: 4, cEnd: 5}
+    { id: 'block5', rStart: 3, rEnd: 5, cStart: 4, cEnd: 6}
 ];
 
 // blocos vermelhos (alvo)
 let redBlocksObj = [
-    { id: 'redblock1', rStart: 3, rEnd: 4, cStart: 2, cEnd: 3 }, 
-    { id: 'redblock2', rStart: 3, rEnd: 4, cStart: 5, cEnd: 6 }  
+    { id: 'redblock1', rStart: 1, rEnd: 2, cStart: 1, cEnd: 2 }, 
+    { id: 'redblock2', rStart: 5, rEnd: 6, cStart: 5, cEnd: 6 }  
 ];
 
 // atualiza estilos CSS para red blocks
@@ -179,7 +179,7 @@ const winCondition = () => {
     const colsOverlap = (r1.cStart < r2.cEnd) && (r1.cEnd > r2.cStart);
 
     if (rowsOverlap && colsOverlap) {
-        // Mostra mensagem de vitória
+        // Próxima fase
         buttonNextLvl.style.display = 'block';
         return true;
     }

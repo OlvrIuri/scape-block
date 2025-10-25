@@ -63,4 +63,13 @@ button{
 }
 #btnNextLvl{
     display: none;
+    position: absolute;
+    top: 90%;
+    left: 45.5%;
+}
+.menu-game > button{
+    margin: 8px;
+}
+.menu-game > p{
+    margin: 4px;
 }
